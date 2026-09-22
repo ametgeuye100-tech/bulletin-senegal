@@ -1,4 +1,35 @@
-from flask import Flask, render_template_string, request, redirect, url_for, session
+import streamlit as st
+import datetime
+
+# --- PORTAIL PAYANT BULLETIN SENEGAL - 100F / SEMAINE ---
+NUMERO_WAVE = "76 172 71 93"
+PRIX = 100
+
+if "paye" not in st.session_state:
+    st.session_state.paye = False
+
+if not st.session_state.paye:
+    st.title("BULLETIN SÉNÉGAL")
+    st.warning("Accès : 100F / 7 jours")
+    st.write(f"1. Paie 100F sur Wave au **{NUMERO_WAVE}**")
+    st.write("2. Envoie la capture + ton IEN sur WhatsApp au même numéro")
+    st.write("3. Je t'envoie le code d'accès")
+    
+    st.link_button(f"Payer {PRIX}F sur Wave", f"https://wave.com")
+    
+    code = st.text_input("Entre le code d'accès reçu par WhatsApp")
+    if st.button("Débloquer"):
+        # Toi tu donneras ce code par WhatsApp : "SENEGAL100"
+        if code == "SENEGAL100":
+            st.session_state.paye = True
+            st.rerun()
+        else:
+            st.error("Code faux")
+    st.stop() # <--- TOUT S'ARRETE ICI S'IL N'A PAS PAYE. TON CODE EN DESSOUS NE BOUGE PAS
+# --- FIN DU PORTAIL ---
+
+# --- ICI COMMENCE TON ANCIEN CODE, TU NE TOUCHES RIEN EN DESSOUS ---
+# Ton ancien app.py commence ici...from flask import Flask, render_template_string, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 import json
 from datetime import date
